@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "config:base",
+    "schedule:monthly",
+    ":preserveSemverRanges",
+    ":disableDevDependencies"
+  ],
+  "automerge": true,
+  "rebaseStalePrs": true,
+  "separateMajorMinor": true,
+  "groupName": "all dependencies",
+  "groupSlug": "all",
+  "labels": [
+    "deps"
+  ],
+  "packageRules": [
+    {
+      "packagePatterns": [
+        "*"
+      ],
+      "groupName": "all dependencies",
+      "groupSlug": "all"
+    }
+  ]
+}

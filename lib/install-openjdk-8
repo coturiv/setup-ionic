@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Install OpenJDK 8
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends openjdk-8-jdk
+sudo apt-get clean
+sudo rm -rf /var/lib/apt/lists/*
+sudo rm -rf /var/cache/oracle-jdk8-installer
+java -version
+
+# Install Gradle
+# GRADLE_VERSION=4.10.3
+# wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
+# mkdir /opt/gradle
+# unzip -d /opt/gradle gradle-${GRADLE_VERSION}-all.zip
+# rm gradle-${GRADLE_VERSION}-all.zip
+# ln -s /opt/gradle/gradle-${GRADLE_VERSION}/bin/gradle /usr/bin/gradle
+# mkdir .gradle \
+
+# gradle -v
+

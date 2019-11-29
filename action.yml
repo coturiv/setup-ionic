@@ -1,0 +1,23 @@
+name: 'Setup Ionic'
+description: 'Set up your GitHub Actions workflow with Cordova/Ionic environment. Only supports macos & ubuntu at this time.'
+author: 'coturiv'
+branding:
+  color: purple
+  icon: code
+
+inputs:
+  cordova-version:
+    description: Version range or exact version of Cordova to use
+    default: '8'
+  ionic-version:
+    description: Version range or exact version of Ionic to use
+  install-java:
+    description: Whether to install Java
+    default: true
+  install-pods:
+    description: Whether to install CocoaPods
+    default: true
+
+runs:
+  using: 'node12'
+  main: 'lib/main.js'

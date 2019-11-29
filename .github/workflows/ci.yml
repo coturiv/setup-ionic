@@ -1,0 +1,28 @@
+name: "CI"
+
+on:
+  push: {branches: master}
+  pull_request: {branches: master}
+  repository_dispatch:
+
+jobs:
+  job_1:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - run: npm ci
+    - run: npm run build
+    - run: npm test
+    - name: Use coturiv/setup-ionic
+      uses: ./
+      with: 
+        cordova-version: 8
+    - name: Run cordova project tests
+      run: |
+        ionic info
+        ionic start testapp blank --cordova --type angular --no-link --no-git
+        cd testapp
+        ionic cordova platform add android@latest
+        ionic cordova build android
