@@ -8,7 +8,7 @@ Set up your GitHub Actions workflow with Cordova/Ionic environment. Only support
 
 ```
 - name: Use coturiv/setup-ionic
-  uses: coturiv/setup-ionic@v1.0.0
+  uses: coturiv/setup-ionic@v1
   with:
     cordova-version: 8
 
