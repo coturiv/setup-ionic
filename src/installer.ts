@@ -17,6 +17,11 @@ export async function installCordova(version?: string) {
     // install cordova-res 
     // https://github.com/ionic-team/cordova-res 
     // await installNpmPkg('cordova-res');
+
+    
+    // Fix access permissions
+    await exec2(`sudo chown -R $USER:$GROUP ~/.npm`);
+    await exec2(`sudo chown -R $USER:$GROUP ~/.config`);
 }
 
 /**

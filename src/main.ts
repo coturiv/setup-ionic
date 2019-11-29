@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import * as semver from 'semver';
-import * as child from 'child_process';
 import { installCordova, installIonic, installJava, installPods } from './installer';
 
 async function run() {
@@ -37,10 +36,6 @@ function checkPlatform() {
       '@coturiv/setup-ionic only supports either Ubuntu Linux or MacOS at this time'
     )
   }
-
-  // Fix access permissions
-  child.execSync(`sudo chown -R $USER:$GROUP ~/.npm`);
-  child.execSync(`sudo chown -R $USER:$GROUP ~/.config`);
 }
 
 function checkVersion(version: string) {

@@ -16,6 +16,7 @@
     "actions",
     "node",
     "setup",
+    "ionic",
     "cordova"
   ],
   "author": "coturiv",
