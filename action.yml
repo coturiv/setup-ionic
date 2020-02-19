@@ -8,7 +8,7 @@ branding:
 inputs:
   cordova-version:
     description: Version range or exact version of Cordova to use
-    default: '8'
+    default: '9'
   ionic-version:
     description: Version range or exact version of Ionic to use
   install-java:
