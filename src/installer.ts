@@ -106,7 +106,7 @@ async function exec2(command: string) {
     return new Promise((resolve, reject) => {
         child.exec(command, (err: any, stdout: any, stderr: any) => {
             if (stderr) {
-                resolve();
+                resolve(stdout);
             }
 
             if (err) {
