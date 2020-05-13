@@ -13,12 +13,12 @@ import * as core from '@actions/core';
  */
 export async function installCordova(version?: string) {
     await installNpmPkg('cordova', version);
-    
+
     // install cordova-res 
     // https://github.com/ionic-team/cordova-res 
     // await installNpmPkg('cordova-res');
 
-    
+
     // Fix access permissions
     await exec2(`sudo chown -R $USER:$GROUP ~/.npm`);
     await exec2(`sudo chown -R $USER:$GROUP ~/.config`);
@@ -27,10 +27,10 @@ export async function installCordova(version?: string) {
 /**
  * Install Ionic Cli
  * 
- * https://www.npmjs.com/package/ionic
+ * https://www.npmjs.com/package/@ionic/cli
  */
 export async function installIonic(version?: string) {
-    await installNpmPkg('ionic', version);
+    await installNpmPkg('@ionic/cli', version);
 }
 
 /**
@@ -89,11 +89,11 @@ export async function installNpmPkg(pkg: string, version?: string) {
         const cachedPath = await tc.cacheDir(installedPath, pkg, version);
         core.addPath(cachedPath);
     }
-   
+
 }
 
 async function exec2(command: string) {
-    
+
     return new Promise((resolve, reject) => {
         child.exec(command, (err: any, stdout: any, stderr: any) => {
             if (stderr) {
@@ -109,4 +109,3 @@ async function exec2(command: string) {
         })
     })
 }
-  

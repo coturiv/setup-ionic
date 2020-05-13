@@ -1,6 +1,6 @@
 {
   "name": "setup-ionic",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Setup iOS and Android environment for Cordova/Ionic projects.",
   "main": "lib/main.js",
@@ -33,7 +33,7 @@
     "husky": "^3.1.0",
     "jest": "^24.8.0",
     "jest-circus": "^24.7.1",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "^25.5.1",
     "typescript": "^3.5.1"
   },
   "husky": {

@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - run: npm ci
+    - run: npm install
     - run: npm run build
     - run: npm test
     - name: Use coturiv/setup-ionic
@@ -20,7 +20,7 @@ jobs:
     - name: Run cordova project tests
       run: |
         ionic info
-        ionic start testapp blank --cordova --type angular --no-link --no-git
+        ionic start testapp blank --cordova --type angular --no-link --no-git --no-interactive --confirm
         cd testapp
         ionic cordova platform add android@latest
         ionic cordova build android
