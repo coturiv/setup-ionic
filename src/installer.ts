@@ -54,6 +54,15 @@ export async function installPods() {
 }
 
 /**
+ * Logs installed information
+ *
+ */
+export async function logInstalledInfo(command = 'ionic info') {
+    core.info('Cordova/Ionic environment has been setup successfully.');
+    core.info(await exec2(command) as string);
+}
+
+/**
  * Install NPM Package
  * 
  * @param pkg     : name of package
