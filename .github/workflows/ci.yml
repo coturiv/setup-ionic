@@ -1,26 +1,26 @@
 name: "CI"
-
-on:
-  push: {branches: master}
-  pull_request: {branches: master}
-  repository_dispatch:
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
-  job_1:
-    name: test
+  build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-
-    - name: Build
-      run: |
+    - run: |
         npm ci
         npm run all
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
     - name: Use coturiv/setup-ionic
       uses: ./
     - name: Run cordova project tests
       run: |
-        ionic info
         ionic start testapp blank --cordova --type angular --no-link --no-git --no-interactive --confirm
         cd testapp
         ionic cordova platform add android@latest
