@@ -12,9 +12,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - run: npm install
-    - run: npm run build
-    - run: npm test
+    - name: Build
+      run: |
+        npm ci
+        npm run all
     - name: Use coturiv/setup-ionic
       uses: ./
     - name: Run cordova project tests
