@@ -55,9 +55,11 @@ export async function installPods(): Promise<void> {
  * Logs installed information
  *
  */
-export async function logInstalledInfo(command = 'ionic info'): Promise<void> {
+export async function logInstalledInfo(): Promise<void> {
   core.info('Cordova/Ionic environment has been setup successfully.')
-  core.info((await exec2(command)) as string)
+
+  core.info((await exec2('ionic info')) as string)
+  core.info((await exec2('cordova -v')) as string)
 }
 
 /**
