@@ -59,7 +59,7 @@ export async function logInstalledInfo(): Promise<void> {
   core.info('Cordova/Ionic environment has been setup successfully.')
 
   core.info((await exec2('ionic info')) as string)
-  core.info((await exec2('cordova -v')) as string)
+  core.info(`Cordova: ${await exec2('cordova -v')}`)
 }
 
 /**

@@ -6805,7 +6805,7 @@ function logInstalledInfo() {
     return __awaiter(this, void 0, void 0, function* () {
         core.info('Cordova/Ionic environment has been setup successfully.');
         core.info((yield exec2('ionic info')));
-        core.info((yield exec2('cordova -v')));
+        core.info(`Cordova: ${yield exec2('cordova -v')}`);
     });
 }
 exports.logInstalledInfo = logInstalledInfo;
