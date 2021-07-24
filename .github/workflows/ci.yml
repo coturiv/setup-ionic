@@ -6,18 +6,21 @@ on: # rebuild any PRs and main branch changes
       - master
 
 jobs:
-  build: # make sure build/ci work properly
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - run: |
-        npm ci
-        npm run all
+#   build: # make sure build/ci work properly
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v1
+#     - run: |
+#         npm ci
+#         npm run all
         
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 15.x
     - uses: actions/setup-java@v1
       with:
         java-version: 1.8
