@@ -20,7 +20,7 @@ jobs:
     - uses: actions/setup-java@v2
       with:
         distribution: 'adopt' # See 'Supported distributions' for available options
-        java-version: 1.8
+        java-version: 8
     - name: Use coturiv/setup-ionic
       uses: ./
     - name: Run cordova project tests
