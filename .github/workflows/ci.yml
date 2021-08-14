@@ -32,6 +32,8 @@ jobs:
         cd testapp
         ionic cordova platform add android
     - name: Removing 31.0.0 Build tool
-      run: $ANDROID_SDK_ROOT/tools/bin/sdkmanager --uninstall 'build-tools;31.0.0
+      run: $ANDROID_SDK_ROOT/tools/bin/sdkmanager --uninstall 'build-tools;31.0.0'
     - name: Run cordova project tests
-      run: ionic cordova build android
+      run: |
+        cd testapp
+        ionic cordova build android
