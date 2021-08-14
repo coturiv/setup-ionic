@@ -23,10 +23,13 @@ jobs:
        java-version: '8'
     - name: Use coturiv/setup-ionic
       uses: ./
-    - name: Run cordova project tests
+    - name: Create a new Project
       run: |
         ionic start testapp blank --cordova --type angular --no-link --no-git --no-interactive --confirm
         cd testapp
-        ionic cordova platform add android@latest
-        $ANDROID_SDK_ROOT/tools/bin/sdkmanager --uninstall 'build-tools;31.0.0
-        ionic cordova build android
+    - name: Adding Platform Android
+      run: ionic cordova platform add android
+    - name: Removing 31.0.0 Build tool
+      run: $ANDROID_SDK_ROOT/tools/bin/sdkmanager --uninstall 'build-tools;31.0.0
+    - name: Run cordova project tests
+      run: ionic cordova build android
