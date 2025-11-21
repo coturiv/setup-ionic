@@ -93,7 +93,7 @@ export const installPods = async (): Promise<void> => {
  *
  */
 export const logInstalledInfo = async (builder?: string): Promise<void> => {
-  core.info('Cordova/Ionic environment has been setup successfully.')
+  core.info('Capacitor/Cordova/Ionic environment has been setup successfully.')
   if (builder === 'capacitor') {
     core.info(`Capacitor: ${await runCommand('cap --version')}`)
   } else if (builder === 'cordova') {
@@ -121,8 +121,9 @@ export const installNpmPkg = async (
     }
   }
 
+  const safe = pkg.replace(/[@/]/g, '-')
   const tmpPrefix = fs.mkdtempSync(
-    path.join(os.tmpdir(), `setup-ionic-${pkg}-`)
+    path.join(os.tmpdir(), `setup-ionic-${safe}-`)
   )
   await runCommand(
     `npm install ${pkg}${

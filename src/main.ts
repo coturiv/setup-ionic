@@ -29,10 +29,8 @@ async function run(): Promise<void> {
       }
     }
 
-    const ionicVersion = core.getInput('ionic-version')
-    if (ionicVersion) {
-      await installIonic(ionicVersion)
-    }
+    const ionicVersion = core.getInput('ionic-version') || 'latest'
+    await installIonic(ionicVersion)
 
     // install java if requested (Linux/macOS only)
     const installJavaFlag = core.getInput('install-java')
