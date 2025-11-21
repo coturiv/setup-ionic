@@ -3,11 +3,11 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
-    name: Build and test
+    name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -22,10 +22,8 @@ jobs:
       - run: npm ci
       - run: npm run all
 
-  # merged into integration jobs below
-
   test-cordova:
-    name: Test (Cordova) on Ubuntu/macOS; iOS on macOS
+    name: Test (Cordova)
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -59,8 +57,10 @@ jobs:
           ionic cordova build ios --no-interactive -- --buildFlag="-sdk iphonesimulator"
 
   test-capacitor:
-    name: Test (Capacitor) on Ubuntu/macOS; iOS on macOS
+    name: Test (Capacitor)
     runs-on: ${{ matrix.os }}
+    env:
+      CAPACITOR_ANDROID_STUDIO_PATH: /usr/bin/false
     strategy:
       fail-fast: false
       matrix:
@@ -84,7 +84,7 @@ jobs:
           ionic start testapp blank --type angular --no-link --no-git --no-interactive --confirm
           cd testapp
           ionic cap add android
-          ionic cap build android
+          ionic cap build android --no-open
       - name: Build iOS sample (macOS only)
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
