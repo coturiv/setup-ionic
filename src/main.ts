@@ -1,56 +1,59 @@
 import * as core from '@actions/core'
-import * as semver from 'semver'
 import {
   installCordova,
   installIonic,
-  // installJava,
+  installCapacitor,
+  installJava,
   installPods,
-  logInstalledInfo
+  logInstalledInfo,
+  restoreCaches,
+  saveCaches
 } from './installer'
 
 async function run(): Promise<void> {
   try {
-    checkPlatform()
+    await restoreCaches()
 
-    // install cordova-cli
-    const cordovaVersion = core.getInput('cordova-version')
-    if (checkVersion(cordovaVersion)) {
-      await installCordova(cordovaVersion)
+    const legacyInput = core.getInput('legacy')
+    const legacy = legacyInput && legacyInput.toLowerCase() === 'true'
+    const builder = legacy ? 'cordova' : 'capacitor'
+    if (!legacy) {
+      const capVersion = core.getInput('capacitor-version') || 'latest'
+      await installCapacitor(capVersion)
+    } else {
+      const cordovaVersion = core.getInput('cordova-version')
+      if (cordovaVersion) {
+        await installCordova(cordovaVersion)
+      } else {
+        await installCordova()
+      }
     }
 
-    // install ionic-cli
     const ionicVersion = core.getInput('ionic-version')
-    if (checkVersion(ionicVersion)) {
+    if (ionicVersion) {
       await installIonic(ionicVersion)
     }
 
-    // install specific version of java and gradle
-    // await installJava();
+    // install java if requested (Linux/macOS only)
+    const installJavaFlag = core.getInput('install-java')
+    if (!installJavaFlag || installJavaFlag.toLowerCase() === 'true') {
+      const javaVersion = core.getInput('java-version') || '17'
+      await installJava(javaVersion)
+    }
 
-    // install cocoapods
-    await installPods()
+    // install cocoapods if requested
+    const installPodsFlag = core.getInput('install-pods')
+    if (!installPodsFlag || installPodsFlag.toLowerCase() === 'true') {
+      await installPods()
+    }
 
-    // run `ionic info`
-    await logInstalledInfo()
+    await logInstalledInfo(builder)
+
+    await saveCaches()
   } catch (error) {
-    core.setFailed(error.message)
+    const msg = error instanceof Error ? error.message : String(error)
+    core.setFailed(msg)
   }
-}
-
-function checkPlatform(): void {
-  if (process.platform !== 'linux' && process.platform !== 'darwin') {
-    throw new Error(
-      '@coturiv/setup-ionic only supports either Ubuntu Linux or MacOS at this time'
-    )
-  }
-}
-
-function checkVersion(version: string): boolean {
-  if (!version || semver.valid(version) || semver.validRange(version)) {
-    return true
-  }
-
-  throw new Error(`Error, ${version} is not a valid format.`)
 }
 
 run()

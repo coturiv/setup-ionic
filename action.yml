@@ -1,5 +1,5 @@
 name: 'Setup Ionic'
-description: 'Set up your GitHub Actions workflow with Cordova/Ionic environment. Only supports macos & ubuntu at this time.'
+description: 'Set up your GitHub Actions workflow with Capacitor or Cordova environment.'
 author: 'coturiv'
 branding:
   color: purple
@@ -8,9 +8,17 @@ branding:
 inputs:
   cordova-version:
     description: Version range or exact version of Cordova to use
-    default: '10'
   ionic-version:
     description: Version range or exact version of Ionic to use
+  capacitor-version:
+    description: Version range or exact version of Capacitor CLI to use
+    default: 'latest'
+  legacy:
+    description: Use Cordova (true) or Capacitor (false)
+    default: 'false'
+  java-version:
+    description: JDK major version to install on Linux/macOS (e.g. 17, 21)
+    default: '17'
   install-java:
     description: Whether to install Java
     default: true
@@ -19,5 +27,5 @@ inputs:
     default: true
 
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'dist/index.js'
