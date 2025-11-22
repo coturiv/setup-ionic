@@ -10,10 +10,6 @@ Set up your GitHub Actions workflow with Capacitor or Cordova environment. Suppo
 # Capacitor (default)
 - name: Setup environment
   uses: coturiv/setup-ionic@v2
-  with:
-    legacy: false
-    capacitor-version: latest
-    java-version: 17
 
 - name: Build Android
   run: |

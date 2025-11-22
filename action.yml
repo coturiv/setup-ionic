@@ -17,7 +17,7 @@ inputs:
     description: Use Cordova (true) or Capacitor (false)
     default: 'false'
   java-version:
-    description: JDK major version to install on Linux/macOS (e.g. 17, 21)
+    description: JDK major version to install (e.g. 17, 21)
     default: '17'
   install-java:
     description: Whether to install Java
@@ -29,3 +29,4 @@ inputs:
 runs:
   using: 'node20'
   main: 'dist/index.js'
+  post: 'dist/post.js'

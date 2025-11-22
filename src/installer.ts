@@ -93,7 +93,7 @@ export const installPods = async (): Promise<void> => {
  *
  */
 export const logInstalledInfo = async (builder?: string): Promise<void> => {
-  core.info('Cordova/Ionic environment has been setup successfully.')
+  core.info('Capacitor/Cordova/Ionic environment has been setup successfully.')
   if (builder === 'capacitor') {
     core.info(`Capacitor: ${await runCommand('cap --version')}`)
   } else if (builder === 'cordova') {
@@ -121,8 +121,9 @@ export const installNpmPkg = async (
     }
   }
 
+  const safe = pkg.replace(/[@/]/g, '-')
   const tmpPrefix = fs.mkdtempSync(
-    path.join(os.tmpdir(), `setup-ionic-${pkg}-`)
+    path.join(os.tmpdir(), `setup-ionic-${safe}-`)
   )
   await runCommand(
     `npm install ${pkg}${
@@ -263,6 +264,7 @@ const saveCocoaPods = async (): Promise<void> => {
 const restoreAndroidSdk = async (): Promise<void> => {
   const sdkRoot = getAndroidSdkRoot()
   if (!sdkRoot) return
+  if (!isWritableDir(sdkRoot)) return
   const key = `android-sdk-${process.platform}-${hashString(
     androidSdkSignature(sdkRoot)
   )}`
@@ -276,6 +278,7 @@ const restoreAndroidSdk = async (): Promise<void> => {
 const saveAndroidSdk = async (): Promise<void> => {
   const sdkRoot = getAndroidSdkRoot()
   if (!sdkRoot) return
+  if (!isWritableDir(sdkRoot)) return
   const key = `android-sdk-${process.platform}-${hashString(
     androidSdkSignature(sdkRoot)
   )}`
@@ -305,6 +308,15 @@ const hashString = (s: string): string => {
   return crypto.createHash('sha256').update(s).digest('hex')
 }
 
+const isWritableDir = (p: string): boolean => {
+  try {
+    fs.accessSync(p, fs.constants.W_OK)
+    return true
+  } catch {
+    return false
+  }
+}
+
 const getAndroidSdkRoot = (): string | undefined => {
   const envRoot = process.env.ANDROID_SDK_ROOT || process.env.ANDROID_HOME
   if (envRoot && fs.existsSync(envRoot)) return envRoot
@@ -312,6 +324,7 @@ const getAndroidSdkRoot = (): string | undefined => {
   const candidates = [
     path.join(home, 'Library', 'Android', 'sdk'),
     path.join(home, 'Android', 'Sdk'),
+    '/usr/local/lib/android/sdk',
     '/usr/local/android-sdk',
     '/opt/android-sdk',
     path.join(home, 'AppData', 'Local', 'Android', 'Sdk'),

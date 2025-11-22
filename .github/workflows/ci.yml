@@ -3,11 +3,11 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
-    name: Build and test
+    name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -22,10 +22,8 @@ jobs:
       - run: npm ci
       - run: npm run all
 
-  # merged into integration jobs below
-
   test-cordova:
-    name: Test (Cordova) on Ubuntu/macOS; iOS on macOS
+    name: Test (Cordova)
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -45,12 +43,21 @@ jobs:
         run: |
           cordova -v
           ionic info || true
+          java -version
+          javac -version
       - name: Build Android sample
         run: |
           ionic start testapp blank --cordova --type angular --no-link --no-git --no-interactive --confirm
           cd testapp
           ionic cordova platform add android@latest
           ionic cordova build android
+      - name: Upload Android APK (Cordova)
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-cordova-${{ matrix.os }}
+          path: |
+            testapp/platforms/android/app/build/outputs/apk/**/*.apk
+          retention-days: 7
       - name: Build iOS sample (macOS only)
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
@@ -59,8 +66,10 @@ jobs:
           ionic cordova build ios --no-interactive -- --buildFlag="-sdk iphonesimulator"
 
   test-capacitor:
-    name: Test (Capacitor) on Ubuntu/macOS; iOS on macOS
+    name: Test (Capacitor)
     runs-on: ${{ matrix.os }}
+    env:
+      CAPACITOR_ANDROID_STUDIO_PATH: /usr/bin/false
     strategy:
       fail-fast: false
       matrix:
@@ -79,12 +88,30 @@ jobs:
         run: |
           cap --version
           ionic info || true
+          java -version
+          javac -version          
       - name: Build Android sample
         run: |
           ionic start testapp blank --type angular --no-link --no-git --no-interactive --confirm
           cd testapp
           ionic cap add android
-          ionic cap build android
+          ionic cap build android --no-open
+      - name: Inject Gradle Java 17 (non-Windows)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: bash scripts/inject-gradle-java17.sh testapp
+      - name: Inject Gradle Java 17 (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: pwsh -File scripts/inject-gradle-java17.ps1 -AppPath testapp
+      - name: Upload Android APK (Capacitor)
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-${{ runner.os }}
+          path: |
+            testapp/android/app/build/outputs/apk/debug/*.apk
+            testapp\android\app\build\outputs\apk\debug\*.apk
+          retention-days: 7
       - name: Build iOS sample (macOS only)
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
