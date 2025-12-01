@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [20]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
@@ -30,10 +30,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
       - name: Setup environment
         uses: ./
         with:
@@ -52,7 +52,7 @@ jobs:
           ionic cordova platform add android@latest
           ionic cordova build android
       - name: Upload Android APK (Cordova)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: android-apk-cordova-${{ matrix.os }}
           path: |
@@ -75,10 +75,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
       - name: Setup environment
         uses: ./
         with:
@@ -105,7 +105,7 @@ jobs:
         shell: pwsh
         run: pwsh -File scripts/inject-gradle-java17.ps1 -AppPath testapp
       - name: Upload Android APK (Capacitor)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: android-apk-${{ runner.os }}
           path: |
