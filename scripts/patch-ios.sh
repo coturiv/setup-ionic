@@ -106,6 +106,7 @@ PODPATCH
 HEADER_SEARCH_PATHS = $(inherited) $(DERIVED_FILE_DIR)/GeneratedModuleMaps-iphonesimulator
 EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64
 ONLY_ACTIVE_ARCH = YES
+IPHONEOS_DEPLOYMENT_TARGET = 13.0
 XC
   echo " - Created ${XC_CONFIG_PATH}"
 

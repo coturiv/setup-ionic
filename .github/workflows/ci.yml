@@ -69,8 +69,9 @@ jobs:
           pod --version || true
           if [ -f platforms/ios/Podfile ]; then (cd platforms/ios && pod install --repo-update); fi
           # build and instruct Cordova/Xcode to use the xcconfig the script creates
+          XCOV=$(pwd)/platforms/ios/xcconfigs/ci-overrides.xcconfig
           ionic cordova build ios --no-interactive -- \
-            --buildFlag="-xcconfig platforms/ios/xcconfigs/ci-overrides.xcconfig" \
+            --buildFlag="-xcconfig ${XCOV}" \
             --buildFlag="-sdk iphonesimulator" \
             --buildFlag="-destination generic/platform=iOS Simulator"
 
