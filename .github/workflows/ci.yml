@@ -67,7 +67,7 @@ jobs:
           bash ../scripts/patch-ios.sh platforms/ios
           # verify CocoaPods and ensure specs are up-to-date (redundant with script but safe)
           pod --version || true
-          (cd platforms/ios && pod install --repo-update) || true
+          if [ -f platforms/ios/Podfile ]; then (cd platforms/ios && pod install --repo-update); fi
           # build and instruct Cordova/Xcode to use the xcconfig the script creates
           ionic cordova build ios --no-interactive -- \
             --buildFlag="-xcconfig platforms/ios/xcconfigs/ci-overrides.xcconfig" \
