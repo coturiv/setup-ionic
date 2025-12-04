@@ -2,12 +2,11 @@
 set -euo pipefail
 
 # Usage: scripts/patch-ios.sh [target-dir ...]
-# If no targets provided, it will attempt both 'platforms/ios' (Cordova) and 'ios' (Capacitor).
 
 if [[ $# -gt 0 ]]; then
   TARGETS=("$@")
 else
-  TARGETS=("platforms/ios" "ios")
+  TARGETS=("platforms/ios")
 fi
 
 # Helper for portable sed - macOS needs -i ''
@@ -31,6 +30,10 @@ for BASE in "${TARGETS[@]}"; do
   if [[ -f "$PBX_PATH" ]]; then
     echo " - Updating deployment target in ${PBX_PATH}"
     "${SED_INPLACE[@]}" "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9]\{1,2\}\.[0-9]\{1,2\} *;/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/g" "$PBX_PATH" || true
+
+    echo " - Ensuring simulator excludes arm64 in ${PBX_PATH}"
+    # Add EXCLUDED_ARCHS for simulator to avoid arm64 issues on some pods
+    "${SED_INPLACE[@]}" "/buildSettings = {$/a\\ EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64;" "$PBX_PATH" || true
   else
     echo " - ${PBX_PATH} not found, skipping deployment target patch"
   fi
@@ -59,15 +62,42 @@ for BASE in "${TARGETS[@]}"; do
   # 3) Ensure Podfile platform is at least 13.0
   if [[ -f "$PODFILE_PATH" ]]; then
     echo " - Ensuring Podfile platform is at least iOS 13.0"
-    awk '
-      {
-        if ($0 ~ /^\s*platform\s*:\s*.*ios/) {
-          print "platform :ios, '\''13.0'\''"
-        } else {
-          print
+    if grep -q "^\s*platform\s*:\s*.*ios" "$PODFILE_PATH"; then
+      awk '
+        {
+          if ($0 ~ /^\s*platform\s*:\s*.*ios/) {
+            print "platform :ios, '\''13.0'\''"
+          } else {
+            print
+          }
         }
-      }
-    ' "$PODFILE_PATH" > "${PODFILE_PATH}.patched" && mv "${PODFILE_PATH}.patched" "$PODFILE_PATH" || true
+      ' "$PODFILE_PATH" > "${PODFILE_PATH}.patched" && mv "${PODFILE_PATH}.patched" "$PODFILE_PATH" || true
+    else
+      # Prepend platform line if missing
+      {
+        echo "platform :ios, '13.0'"
+        cat "$PODFILE_PATH"
+      } > "${PODFILE_PATH}.patched" && mv "${PODFILE_PATH}.patched" "$PODFILE_PATH"
+    fi
+
+    # Ensure pods build with at least iOS 13.0 (add post_install if missing)
+    if ! grep -q "post_install" "$PODFILE_PATH"; then
+      cat >> "$PODFILE_PATH" <<'PODPATCH'
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
+  end
+end
+PODPATCH
+    fi
+
+    echo " - Running CocoaPods install with repo update"
+    (
+      cd "$BASE"
+      pod install --repo-update --silent || pod install --repo-update || true
+    )
   else
     echo " - ${PODFILE_PATH} not found, skipping Podfile patch"
   fi
@@ -76,6 +106,8 @@ for BASE in "${TARGETS[@]}"; do
   mkdir -p "$XC_CONFIG_DIR"
   cat > "$XC_CONFIG_PATH" <<'XC'
 HEADER_SEARCH_PATHS = $(inherited) $(DERIVED_FILE_DIR)/GeneratedModuleMaps-iphonesimulator
+EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64
+ONLY_ACTIVE_ARCH = YES
 XC
   echo " - Created ${XC_CONFIG_PATH}"
 
