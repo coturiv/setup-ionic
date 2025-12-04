@@ -64,7 +64,7 @@ jobs:
           cd testapp
           ionic cordova platform add ios@latest
           # run the patch script from the repository root to adjust generated iOS files in CI
-          bash scripts/patch-ios.sh platforms/ios
+          bash ../scripts/patch-ios.sh platforms/ios
           # build and instruct Cordova/Xcode to use the xcconfig the script creates
           ionic cordova build ios --no-interactive -- --buildFlag="-xcconfig platforms/ios/xcconfigs/ci-overrides.xcconfig" --buildFlag="-sdk iphonesimulator"
 
@@ -122,5 +122,5 @@ jobs:
           ionic cap add ios
           npx cap sync ios
           # run the patch script to adjust generated Capacitor iOS files in CI
-          bash scripts/patch-ios.sh ios
+          bash ../scripts/patch-ios.sh ios
           xcodebuild -workspace ios/App/App.xcworkspace -scheme App -sdk iphonesimulator -configuration Debug build -xcconfig ios/xcconfigs/ci-overrides.xcconfig
