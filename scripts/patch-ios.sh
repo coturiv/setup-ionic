@@ -31,19 +31,7 @@ for BASE in "${TARGETS[@]}"; do
     echo " - Updating deployment target in ${PBX_PATH}"
     "${SED_INPLACE[@]}" "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9]\{1,2\}\.[0-9]\{1,2\} *;/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/g" "$PBX_PATH" || true
 
-    echo " - Ensuring simulator excludes arm64 in ${PBX_PATH}"
-    if ! grep -q "EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64" "$PBX_PATH"; then
-      awk '
-        BEGIN { added=0 }
-        {
-          print $0
-          if (!added && $0 ~ /buildSettings = {$/) {
-            print "EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64;"
-            added=1
-          }
-        }
-      ' "$PBX_PATH" > "${PBX_PATH}.patched" && mv "${PBX_PATH}.patched" "$PBX_PATH"
-    fi
+    # Do not modify pbxproj with sdk-conditional settings; use xcconfig below instead
   else
     echo " - ${PBX_PATH} not found, skipping deployment target patch"
   fi
