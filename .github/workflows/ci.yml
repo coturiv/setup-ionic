@@ -52,7 +52,7 @@ jobs:
           ionic cordova platform add android@latest
           ionic cordova build android
       - name: Upload Android APK (Cordova)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: android-apk-cordova-${{ matrix.os }}
           path: |
@@ -115,7 +115,7 @@ jobs:
         shell: pwsh
         run: pwsh -File scripts/inject-gradle-java17.ps1 -AppPath testapp
       - name: Upload Android APK (Capacitor)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: android-apk-${{ runner.os }}
           path: |
